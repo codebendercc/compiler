@@ -15,14 +15,13 @@
         "symfony/assetic-bundle": "2.3.*",
         "symfony/swiftmailer-bundle": "2.3.*",
         "symfony/monolog-bundle": "2.3.*",
-        "sensio/distribution-bundle": "2.3.*",
+        "sensio/distribution-bundle": "3.0.36",
         "sensio/framework-extra-bundle": "2.3.*",
         "sensio/generator-bundle": "2.3.*",
         "incenteev/composer-parameter-handler": "~2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "4.8.*",
-        "satooshi/php-coveralls": "dev-master",
         "squizlabs/php_codesniffer": "1.*",
         "sebastian/phpcpd": "*",
         "phpmd/phpmd" : "2.0.*",
