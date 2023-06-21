@@ -1,5 +1,5 @@
 #!/bin/sh
-sudo apt-get install -y unzip
+# sudo apt-get install -y unzip
 cd ~
 wget https://github.com/codebendercc/arduino-core-files/archive/master.zip
 unzip -q master.zip
