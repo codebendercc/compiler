@@ -61,6 +61,8 @@ RUN echo 'HISTTIMEFORMAT="%d/%m/%y %T"' >> ~/.bashrc
 # Ubuntu Server (on AWS?) lacks UTF-8 for some reason. Give it that
 RUN locale-gen en_US.UTF-8
 
+RUN sed -i '/date.timezone =/c\date.timezone = UTC' /etc/php5/cli/php.ini
+RUN sed -i '/date.timezone =/c\date.timezone = UTC' /etc/php5/apache2/php.ini
 # From install.sh:
 #### Set Max nesting lvl to something Symfony is happy with
 # RUN echo 'xdebug.max_nesting_level=256' | tee $(php -i | grep -F --color=never 'Scan this dir for additional .ini files' | awk '{ print $9}')/symfony2.ini
