@@ -12,6 +12,9 @@ cp symfony-configs/compiler-parameters.yml Symfony/app/config/parameters.yml
 
 cd Symfony
 
+rm -rf app/cache/*
+rm -rf app/logs/*
+
 composer install
 
 chown -R deploy:www-data .
