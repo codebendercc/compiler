@@ -14,7 +14,7 @@
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-	// "appPort": ["8443:443"]
+	"appPort": ["62443:443","62080:80"],
 
 	// Uncomment the next line to run commands after the container is created.
 	"postCreateCommand": "scripts/vscode_docker_scripts.sh",
