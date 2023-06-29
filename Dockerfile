@@ -63,7 +63,15 @@ RUN locale-gen en_US.UTF-8
 
 # From install.sh:
 #### Set Max nesting lvl to something Symfony is happy with
-RUN echo 'xdebug.max_nesting_level=256' | tee $(php -i | grep -F --color=never 'Scan this dir for additional .ini files' | awk '{ print $9}')/symfony2.ini
+# RUN echo 'xdebug.max_nesting_level=256' | tee $(php -i | grep -F --color=never 'Scan this dir for additional .ini files' | awk '{ print $9}')/symfony2.ini
+
+RUN echo 'xdebug.remote_enable = 1' >> /etc/php5/mods-available/xdebug.ini
+RUN echo 'xdebug.remote_autostart = 1' >> /etc/php5/mods-available/xdebug.ini
+RUN echo 'xdebug.renite_enable = 1' >> /etc/php5/mods-available/xdebug.ini
+RUN echo 'xdebug.max_nesting_level = 1000' >> /etc/php5/mods-available/xdebug.ini
+RUN echo 'xdebug.remote_port=9000' >> /etc/php5/mods-available/xdebug.ini
+RUN echo 'xdebug.profiler_enable_trigger = 1' >> /etc/php5/mods-available/xdebug.ini
+RUN echo 'xdebug.profiler_output_dir = '/var/log'' >> /etc/php5/mods-available/xdebug.ini
 
 # php.ini changes (/etc/php5/apache2/php.ini)
 # change php memory limit to unlimited

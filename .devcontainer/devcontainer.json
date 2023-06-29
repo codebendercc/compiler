@@ -26,5 +26,12 @@
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "devcontainer"
 	"workspaceMount": "source=${localWorkspaceFolder},target=/opt/codebender/compiler,type=bind",
-	"workspaceFolder": "/opt/codebender/compiler"
+	"workspaceFolder": "/opt/codebender/compiler",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"xdebug.php-debug"
+			]
+		}
+	}
 }
