@@ -1,9 +1,37 @@
-/web/bundles/
-/app/bootstrap.php.cache
-/app/cache/*
-/app/config/parameters.yml
-/app/logs/*
-/build/
+###> Deprecated
+# /web/bundles/
+# /app/bootstrap.php.cache
+# /app/cache/*
+# /app/config/parameters.yml
+# /app/logs/*
+# /build/
+# /vendor/
+# /bin/
+# /composer.phar
+###< Deprecated
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
 /vendor/
-/bin/
-/composer.phar
+###< symfony/framework-bundle ###
+
+###> Codebender
+/config/parameters.yml
+# Joe backups
+*~
+###< Codebender
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
