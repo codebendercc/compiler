@@ -1,6 +1,7 @@
 <?php
 
-namespace Codebender\CompilerBundle\Handler;
+namespace App\Service;
+// namespace Codebender\CompilerBundle\Handler;
 
 class CompilerV2Handler extends CompilerHandler
 {
@@ -414,9 +415,9 @@ class CompilerV2Handler extends CompilerHandler
 
         $this->logger_id = microtime(true) . "_" . substr($config['project_dir'], -6) . "_user:$user_id" . "_project:$sketch_id";
 
-        $this->compiler_logger->addInfo($this->logger_id . " - " . implode(" ", $req_elements));
+        $this->compiler_logger->info($this->logger_id . " - " . implode(" ", $req_elements));
         if ($should_archive)
-            $this->compiler_logger->addInfo($this->logger_id . " - " . "Archive file: $archive_path");
+            $this->compiler_logger->info($this->logger_id . " - " . "Archive file: $archive_path");
     }
 
     /**

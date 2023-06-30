@@ -1,10 +1,10 @@
 <?php
 
-namespace Codebender\CompilerBundle\Tests\Controller;
+namespace App\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class DefaultControllerFunctionalTest extends WebTestCase
+class CompilerControllerFunctionalityTest extends WebTestCase
 {
     public function testStatus()
     {
@@ -12,7 +12,7 @@ class DefaultControllerFunctionalTest extends WebTestCase
 
         $client->request('GET', '/status');
 
-        $this->assertEquals($client->getResponse()->getContent(), '{"success":true,"status":"OK"}');
+        $this->assertEquals('{"success":true,"status":"OK"}', $client->getResponse()->getContent());
 
     }
 
@@ -22,7 +22,7 @@ class DefaultControllerFunctionalTest extends WebTestCase
 
         $client->request('GET', '/inValidKey/v1');
 
-        $this->assertEquals($client->getResponse()->getContent(), '{"success":false,"step":0,"message":"Invalid authorization key."}');
+        $this->assertEquals('{"success":false,"step":0,"message":"Invalid authorization key."}', $client->getResponse()->getContent());
 
     }
 
@@ -34,7 +34,7 @@ class DefaultControllerFunctionalTest extends WebTestCase
 
         $client->request('GET', '/' . $authorizationKey . '/v666');
 
-        $this->assertEquals($client->getResponse()->getContent(), '{"success":false,"step":0,"message":"Invalid API version."}');
+        $this->assertEquals('{"success":false,"step":0,"message":"Invalid API version."}', $client->getResponse()->getContent());
 
     }
 
@@ -46,7 +46,7 @@ class DefaultControllerFunctionalTest extends WebTestCase
 
         $client->request('GET', '/' . $authorizationKey . '/v1');
 
-        $this->assertEquals($client->getResponse()->getContent(), '{"success":false,"step":0,"message":"Invalid input."}');
+        $this->assertEquals('{"success":false,"step":0,"message":"Invalid input."}', $client->getResponse()->getContent());
 
     }
 
@@ -68,7 +68,7 @@ class DefaultControllerFunctionalTest extends WebTestCase
 
         $response = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertEquals($response["success"], true);
+        $this->assertTrue($response["success"]);
         $this->assertTrue(is_numeric($response["time"]));
 
     }
@@ -91,7 +91,7 @@ class DefaultControllerFunctionalTest extends WebTestCase
 
         $response = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertEquals($response["success"], true);
+        $this->assertTrue($response["success"]);
         $this->assertTrue(is_numeric($response["time"]));
         $this->assertTrue(is_numeric($response["size"]));
 
@@ -118,14 +118,15 @@ class DefaultControllerFunctionalTest extends WebTestCase
 
         $response = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertEquals($response["success"], false);
-        $this->assertEquals($response["success"], false);
-        $this->assertEquals($response["step"], 4);
-        $this->assertContains("Blink.ino:2:13:", $response["message"]);
-        $this->assertContains("expected ';' after top level declarator", $response["message"]);
-        $this->assertContains("no matching function for call to 'pinMode'", $response["message"]);
-        $this->assertContains("candidate function not viable: requires 2 arguments, but 1 was provided", $response["message"]);
-        // $this->assertContains("2 errors generated.", $response["message"]); //unfortunately we no longer show how many errors were generated
+        $this->assertFalse($response["success"]);
+        $this->assertEquals(4, $response["step"]);
+        $this->assertStringContainsString("Blink.ino:2:13:", $response["message"]);
+        // $this->assertStringContainsString("expected ';' after top level declarator", $response["message"]);
+        $this->assertStringContainsString("expected &#039;;&#039; after top level declarator", $response["message"]);
+        // $this->assertStringContainsString("no matching function for call to 'pinMode'", $response["message"]);
+        $this->assertStringContainsString("no matching function for call to &#039;pinMode&#039;", $response["message"]);
+        $this->assertStringContainsString("candidate function not viable: requires 2 arguments, but 1 was provided", $response["message"]);
+        // $this->assertStringContainsString("2 errors generated.", $response["message"]); //unfortunately we no longer show how many errors were generated
     }
 
     public function testBlinkUnoCompileError()
@@ -146,13 +147,15 @@ class DefaultControllerFunctionalTest extends WebTestCase
 
         $response = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertEquals($response["success"], false);
-        $this->assertEquals($response["step"], 4);
-        $this->assertContains("Blink.ino:2:13:", $response["message"]);
-        $this->assertContains("expected ';' after top level declarator", $response["message"]);
-        $this->assertContains("no matching function for call to 'pinMode'", $response["message"]);
-        $this->assertContains("candidate function not viable: requires 2 arguments, but 1 was provided", $response["message"]);
-        // $this->assertContains("2 errors generated.", $response["message"]);  //unfortunately we no longer show how many errors were generated
+        $this->assertFalse($response["success"]);
+        $this->assertEquals(4, $response["step"]);
+        $this->assertStringContainsString("Blink.ino:2:13:", $response["message"]);
+        // $this->assertStringContainsString("expected ';' after top level declarator", $response["message"]);
+        $this->assertStringContainsString("expected &#039;;&#039; after top level declarator", $response["message"]);
+        // $this->assertStringContainsString("no matching function for call to 'pinMode'", $response["message"]);
+        $this->assertStringContainsString("no matching function for call to &#039;pinMode&#039;", $response["message"]);
+        $this->assertStringContainsString("candidate function not viable: requires 2 arguments, but 1 was provided", $response["message"]);
+        // $this->assertStringContainsString("2 errors generated.", $response["message"]);  //unfortunately we no longer show how many errors were generated
     }
 
     public function testExternalVariant()
@@ -172,7 +175,7 @@ class DefaultControllerFunctionalTest extends WebTestCase
 
         $response = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertEquals($response['success'], true);
+        $this->assertTrue($response['success']);
         $objectFilesPath = $client->getContainer()->getParameter('temp_dir') . '/' . $client->getContainer()->getParameter('objdir');
         $coreObjectLibrary = glob("$objectFilesPath/*v105__hardware__arduino__cores__arduino________atmega32u4_8000000_arduino_flora_0x239A_0x8004_______core.a");
 
@@ -196,7 +199,7 @@ class DefaultControllerFunctionalTest extends WebTestCase
 
         $response = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertEquals($response['success'], true);
+        $this->assertTrue($response['success']);
         $objectFilesPath = $client->getContainer()->getParameter('temp_dir') . '/' . $client->getContainer()->getParameter('objdir');
         $externalCoresPath = pathinfo($client->getContainer()->getParameter('external_core_files'), PATHINFO_BASENAME);
         $coreObjectLibrary = glob("$objectFilesPath/*__{$externalCoresPath}__tiny__cores__tiny________attiny85_8000000_tiny__null_null_______core.a");
@@ -222,7 +225,7 @@ class DefaultControllerFunctionalTest extends WebTestCase
         $response = json_decode($client->getResponse()->getContent(), true);
 
 
-        $this->assertTrue(file_exists($response['archive']));
+        $this->assertTrue(file_exists($response['archive'] ?? ''));
     }
 
     public function testCleanedUpLinkerError()
@@ -267,9 +270,10 @@ main.cpp:(.text.main+0x8): undefined reference to `setup'";
 
         $response = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertEquals($response["success"], false);
-        $this->assertEquals($response["step"], 4);
-        $this->assertContains('(library file) PseudoEthernet/Ethernet.h:1:10: </b><b><font style="color: red">fatal error: </font></b><b>\'SPI.h\' file not found', $response['message']);
+        $this->assertFalse($response["success"]);
+        $this->assertEquals(4, $response["step"]);
+        // $this->assertStringContainsString('(library file) PseudoEthernet/Ethernet.h:1:10: </b><b><font style="color: red">fatal error: </font></b><b>\'SPI.h\' file not found', $response['message']);
+        $this->assertStringContainsString('(library file) PseudoEthernet/Ethernet.h:1:10: </b><b><font style="color: red">fatal error: </font></b><b>&#039;SPI.h&#039; file not found', $response['message']);
     }
 
     public function testEthernetCompileErrorRemovedPersonalLibraryPaths()
@@ -290,9 +294,10 @@ main.cpp:(.text.main+0x8): undefined reference to `setup'";
 
         $response = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertEquals($response["success"], false);
-        $this->assertEquals($response["step"], 4);
-        $this->assertContains('(personal library file) PseudoEthernet/Ethernet.h:1:10: </b><b><font style="color: red">fatal error: </font></b><b>\'SPI.h\' file not found', $response['message']);
+        $this->assertFalse($response["success"]);
+        $this->assertEquals(4, $response["step"]);
+        // $this->assertStringContainsString('(personal library file) PseudoEthernet/Ethernet.h:1:10: </b><b><font style="color: red">fatal error: </font></b><b>\'SPI.h\' file not found', $response['message']);
+        $this->assertStringContainsString('(personal library file) PseudoEthernet/Ethernet.h:1:10: </b><b><font style="color: red">fatal error: </font></b><b>&#039;SPI.h&#039; file not found', $response['message']);
     }
 
     public function testDeleteTinyCoreFiles()
@@ -306,8 +311,8 @@ main.cpp:(.text.main+0x8): undefined reference to `setup'";
         $response = json_decode($client->getResponse()->getContent(), true);
 
         $this->assertTrue($response['success']);
-        $this->assertContains('tiny__null_null_______core.a' . "\n", $response['deletedFiles']);
-        $this->assertContains('tiny__null_null_______core.a.LOCK', $response['deletedFiles']);
+        $this->assertStringContainsString('tiny__null_null_______core.a' . "\n", $response['deletedFiles']);
+        $this->assertStringContainsString('tiny__null_null_______core.a.LOCK', $response['deletedFiles']);
         $this->assertEmpty($response['notDeletedFiles']);
 
         $tempDirectory = $client->getContainer()->getParameter('temp_dir');
@@ -342,13 +347,4 @@ main.cpp:(.text.main+0x8): undefined reference to `setup'";
         $this->assertEquals(0, iterator_count($fileSystemIterator));
     }
 
-    public function testAutocomplete()
-    {
-        $this->markTestIncomplete('No tests for the code completion feature yet.');
-    }
-
-    public function testIncorrectInputs()
-    {
-        $this->markTestIncomplete('No tests for invalid inputs yet');
-    }
 }

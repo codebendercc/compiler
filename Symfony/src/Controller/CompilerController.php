@@ -10,22 +10,27 @@
  * \copyright Licensed under the Simplified BSD License
  */
 
-namespace Codebender\CompilerBundle\Controller;
+namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\Service\CompilerHandler;
+use App\Service\DeletionHandler;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Codebender\CompilerBundle\Handler\CompilerHandler;
-use Codebender\CompilerBundle\Handler\CompilerV2Handler;
-use Codebender\CompilerBundle\Handler\DeletionHandler;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
-class DefaultController extends Controller
+class CompilerController extends AbstractController
 {
-    public function statusAction()
+    #[Route('/status', name: 'compiler_status_check', methods: ['GET'])]
+    public function statusAction(): JsonResponse
     {
-        return new JsonResponse(['success' => true, 'status' => 'OK']);
+        return $this->json(
+            ['success' => true, 'status' => 'OK']
+        );
     }
 
-    public function testAction($authorizationKey)
+    #[Route('/{authorizationKey}/test', name: 'compiler_test', methods: ['GET'])]
+    public function testAction($authorizationKey): JsonResponse
     {
         $params = $this->generateParameters();
 
@@ -40,10 +45,12 @@ class DefaultController extends Controller
         set_time_limit(0); // make the script execution time unlimited (otherwise the request may time out)
 
         // change the current Symfony root dir
-        chdir($this->get('kernel')->getRootDir()."/../");
+        // chdir($this->get('kernel')->getRootDir()."/../");
+        chdir($this->getParameter('kernel.project_dir'));
 
         //TODO: replace this with a less horrible way to handle phpunit
-        exec("bin/phpunit -c app --stderr 2>&1", $output, $return_val);
+        // exec("phpunit -c app --stderr 2>&1", $output, $return_val);
+        exec("bin/phpunit --stderr 2>&1", $output, $return_val);
 
         return new JsonResponse([
             "success" => (bool) !$return_val,
@@ -51,7 +58,8 @@ class DefaultController extends Controller
         ]);
     }
 
-    public function indexAction($authorizationKey, $version)
+    #[Route('/{authorizationKey}/{version}', name: 'compiler_home', methods: ['GET', 'POST'])]
+    public function indexAction($authorizationKey, $version, Request $request, CompilerHandler $compiler)
     {
         $params = $this->generateParameters();
 
@@ -63,21 +71,22 @@ class DefaultController extends Controller
             ]);
         }
 
-        $requestObject = $this->getRequest();
-        $request = $requestObject->getContent();
+        // $requestObject = $this->getRequest();
+        $content = $request->getContent();
+
         if ($version == 'v1') {
             // Custom headers used during library tests.
             // They don't affect the compiler's response and make our life easier.
-            if ($requestObject->headers->get('X-Set-Exec-Time') == 'true') {
+            if ($request->headers->get('X-Set-Exec-Time') == 'true') {
                 ini_set('max_execution_time', '30');
             }
-            $mongoProjectId = $requestObject->headers->get('X-Mongo-Id');
+            $mongoProjectId = $request->headers->get('X-Mongo-Id');
 
             //Get the compiler service
-            /** @var CompilerHandler $compiler */
-            $compiler = $this->get('compiler_handler');
+            // /** @var CompilerHandler $compiler */
+            // $compiler = $this->getParameter('compiler_handler');
 
-            $reply = $compiler->main($request, $params);
+            $reply = $compiler->main($content, $params);
             if ($mongoProjectId != '') {
                 $reply['mongo-id'] = $mongoProjectId;
             }
@@ -86,7 +95,7 @@ class DefaultController extends Controller
         }
         if ($version == 'v2') {
             /** @var CompilerV2Handler $compiler */
-            $compiler = $this->get('compiler_v2_handler');
+            $compiler = $this->getParameter('compiler_v2_handler');
 
             $reply = $compiler->main($request, $params);
 
@@ -100,9 +109,10 @@ class DefaultController extends Controller
         ]);
     }
 
-    public function deleteAllObjectsAction($authorizationKey, $version)
+    #[Route('/{authorizationKey}/{version}/delete/all/', name: 'compiler_delete_all', methods: ['POST'])]
+    public function deleteAllObjectsAction($authorizationKey, $version, DeletionHandler $deleter)
     {
-        if ($this->container->getParameter('authorizationKey') != $authorizationKey) {
+        if ($this->getParameter('authorizationKey') != $authorizationKey) {
             return new JsonResponse([
                 'success' => false,
                 'step'    => 0,
@@ -120,7 +130,7 @@ class DefaultController extends Controller
 
         //Get the compiler service
         /** @var DeletionHandler $deleter */
-        $deleter = $this->get('deletion_handler');
+        // $deleter = $this->get('deletion_handler');
 
         $response = $deleter->deleteAllObjects();
 
@@ -142,9 +152,10 @@ class DefaultController extends Controller
         ));
     }
 
-    public function deleteSpecificObjectsAction($authorizationKey, $version, $option, $cachedObjectToDelete)
+    #[Route('/{authorizationKey}/{version}/delete/{option}/{cachedObjectToDelete}', name: 'compiler_delete_specific', methods: ['POST'])]
+    public function deleteSpecificObjectsAction($authorizationKey, $version, $option, $cachedObjectToDelete, DeletionHandler $deleter)
     {
-        if ($this->container->getParameter('authorizationKey') != $authorizationKey) {
+        if ($this->getParameter('authorizationKey') != $authorizationKey) {
             return new JsonResponse([
                 'success' => false, 'step' => 0,
                 'message' => 'Invalid authorization key.'
@@ -158,10 +169,6 @@ class DefaultController extends Controller
                 'message' => 'Invalid API version.'
             ]);
         }
-
-        //Get the compiler service
-        /** @var DeletionHandler $deleter */
-        $deleter = $this->get('deletion_handler');
 
         $response = $deleter->deleteSpecificObjects($option, $cachedObjectToDelete);
 
@@ -222,7 +229,7 @@ class DefaultController extends Controller
         $compiler_config = array();
 
         foreach ($parameters as $parameter) {
-            $compiler_config[$parameter] = $this->container->getParameter($parameter);
+            $compiler_config[$parameter] = $this->getParameter($parameter);
         }
 
         return $compiler_config;

@@ -14,34 +14,35 @@
  * \copyright Licensed under the Simplified BSD License
  */
 
-namespace Codebender\CompilerBundle\Handler;
+namespace App\Service;
+// namespace Codebender\CompilerBundle\Handler;
 
 class DeletionHandler
 {
-	private $objectCacheDirectory;
+    private $objectCacheDirectory;
 
-	function __construct($objectFilesDirectory)
-	{
-		$this->objectCacheDirectory = $objectFilesDirectory;
-	}
+    function __construct($objectFilesDirectory)
+    {
+        $this->objectCacheDirectory = $objectFilesDirectory;
+    }
 
-	function deleteAllObjects()
-	{
-		$fileCount = 0;
-		$notDeletedFiles = '';
-		$deletionStats = array('success_dot_a' => 0,
-			'failure_dot_a' => 0,
-			'success_dot_o' => 0,
-			'failure_dot_o' => 0,
-			'success_dot_d' => 0,
-			'failure_dot_d' => 0,
-			'success_dot_LOCK' => 0,
-			'failure_dot_LOCK' => 0);
+    function deleteAllObjects()
+    {
+        $fileCount = 0;
+        $notDeletedFiles = '';
+        $deletionStats = array('success_dot_a' => 0,
+            'failure_dot_a' => 0,
+            'success_dot_o' => 0,
+            'failure_dot_o' => 0,
+            'success_dot_d' => 0,
+            'failure_dot_d' => 0,
+            'success_dot_LOCK' => 0,
+            'failure_dot_LOCK' => 0);
 
-		if ($handle = @opendir($this->objectCacheDirectory)) {
+        if ($handle = @opendir($this->objectCacheDirectory)) {
 
-			while (false !== ($entry = readdir($handle))) {
-				if ($entry == '.' || $entry == '..' || $entry == '.DS_Store') {
+            while (false !== ($entry = readdir($handle))) {
+                if ($entry == '.' || $entry == '..' || $entry == '.DS_Store') {
                     continue;
                 }
                 $fileCount++;
@@ -58,8 +59,8 @@ class DeletionHandler
                 }
 
                 $deletionStats['success_dot_' . $extension]++;
-			}
-			closedir($handle);
+            }
+            closedir($handle);
 
             return array(
                 'success' => true,
@@ -67,50 +68,50 @@ class DeletionHandler
                 'notDeletedFiles' => $notDeletedFiles,
                 'deletionStats' => $deletionStats
                 );
-		}
+        }
 
         return array('success' => false);
-	}
+    }
 
-	function deleteSpecificObjects($option, $cachedObjectToDelete)
-	{
-		if ($option == 'core') {
+    function deleteSpecificObjects($option, $cachedObjectToDelete)
+    {
+        if ($option == 'core') {
             $cachedObjectToDelete = str_replace(':', '_', $cachedObjectToDelete);
         }
 
-		$deletedFiles = '';
-		$notDeletedFiles = '';
+        $deletedFiles = '';
+        $notDeletedFiles = '';
 
-		if ($handle = @opendir($this->objectCacheDirectory)) {
+        if ($handle = @opendir($this->objectCacheDirectory)) {
 
-			while (false !== ($entry = readdir($handle))) {
+            while (false !== ($entry = readdir($handle))) {
 
-				if ($entry == '.' || $entry == '..' || $entry == '.DS_Store') {
+                if ($entry == '.' || $entry == '..' || $entry == '.DS_Store') {
                     continue;
                 }
 
-				if ($option == 'library' && strpos($entry, '______' . $cachedObjectToDelete . '_______') === false) {
+                if ($option == 'library' && strpos($entry, '______' . $cachedObjectToDelete . '_______') === false) {
                     continue;
                 }
 
-				if ($option == 'core' && strpos($entry, '_' . $cachedObjectToDelete . '_') === false) {
+                if ($option == 'core' && strpos($entry, '_' . $cachedObjectToDelete . '_') === false) {
                     continue;
                 }
 
 
-				if (@unlink($this->objectCacheDirectory . '/' . $entry) === false) {
+                if (@unlink($this->objectCacheDirectory . '/' . $entry) === false) {
                     $notDeletedFiles .= $entry."\n";
                     continue;
                 }
 
                 $deletedFiles .= $entry . "\n";
 
-			}
-			closedir($handle);
+            }
+            closedir($handle);
 
             return array('success' => true, 'deletedFiles' => $deletedFiles, 'notDeletedFiles' => $notDeletedFiles);
-		}
+        }
 
-		return array('success' => false);
-	}
+        return array('success' => false);
+    }
 }
