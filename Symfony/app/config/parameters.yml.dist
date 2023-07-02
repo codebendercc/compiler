@@ -14,7 +14,7 @@ parameters:
     binutils: "/usr/bin"
     python: "/usr/bin/python"
     clang: "/opt/codebender/codebender-arduino-core-files/clang/v3_5/bin/clang"
-    temp_dir: "/tmp"
+    temp_dir: "/mnt/tmp"
     objdir: "codebender_object_files"
     logdir: "codebender_log"
     archive_dir: "compiler_archives"
