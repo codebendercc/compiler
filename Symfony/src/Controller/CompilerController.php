@@ -50,7 +50,7 @@ class CompilerController extends AbstractController
 
         //TODO: replace this with a less horrible way to handle phpunit
         // exec("phpunit -c app --stderr 2>&1", $output, $return_val);
-        exec("bin/phpunit --stderr 2>&1", $output, $return_val);
+        exec("bin/phpunit --do-not-cache-result --testdox --no-interaction --stderr 2>&1", $output, $return_val);
 
         return new JsonResponse([
             "success" => (bool) !$return_val,
