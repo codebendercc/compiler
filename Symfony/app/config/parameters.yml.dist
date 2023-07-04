@@ -18,8 +18,8 @@ parameters:
     objdir: "codebender_object_files"
     logdir: "codebender_log"
     archive_dir: "compiler_archives"
-    autocompletion_dir: "autocompletion"
-    autocompleter: "path_to_autocompleter_script"
+    autocompletion_dir: "/autocompletion"
+    autocompleter: "/opt/codebender/compiler/Symfony/app/Resources/autocompletion/main.py"
 
     # -------- You shouldn't need to edit anything beyond this point. -------- \\
 
@@ -40,4 +40,3 @@ parameters:
     # The default name of the output file, which is created in /tmp/compiler.xxxx
     # by default.
     output: "output"
-
