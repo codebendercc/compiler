@@ -1,4 +1,9 @@
-FROM tzikis/dockercodebenderubuntu14devcompiler:latest
+FROM 741660149381.dkr.ecr.us-west-2.amazonaws.com/codebender-base-ubuntu-14.04-dev-compiler:latest
+
+
+RUN mkdir -p /opt/codebender/compiler
+RUN rm /opt/codebender/website
+RUN ln -s /opt/codebender/compiler /opt/codebender/website
 
 # Create the compiler Symfony config
 WORKDIR /opt/codebender
