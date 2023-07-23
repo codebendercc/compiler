@@ -165,6 +165,12 @@ RUN php bin/console cache:warmup --env=test
 
 USER root
 
+# Tzikis: I was getting the following error when trying to start Apache
+# Operation not supported: AH00023: Couldn't create the mpm-accept mutex 
+# (95)Operation not supported: could not create accept mutex
+# Seems to be a Mac thing, added this suggested solution online
+RUN echo "Mutex posixsem" >> /etc/apache2/apache2.conf
+
 # add a record in /etc/hosts for our domain
 # finally, start apache in the foreground to keep the container running
 #CMD ["apache2ctl", "-DFOREGROUND"]
