@@ -34,5 +34,5 @@ RUN rm -rf Symfony/app/logs/*
 
 # add a record in /etc/hosts for our domain
 # finally, start apache in the foreground to keep the container running
-#CMD ["apache2ctl", "-DFOREGROUND"]
-ENTRYPOINT ["/bin/sh", "-c" , "echo 127.0.0.1   compiler.dev.codebender.cc >> /etc/hosts && apache2ctl -DFOREGROUND" ]
+CMD ["/opt/codebender/compiler/scripts/run_docker.sh"]
+# ENTRYPOINT ["/bin/sh", "-c" , "echo 127.0.0.1   compiler.dev.codebender.cc >> /etc/hosts && apache2ctl -DFOREGROUND" ]
