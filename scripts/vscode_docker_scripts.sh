@@ -5,6 +5,7 @@ set -e
 
 PACKAGENAME=compiler
 
+echo 127.0.0.1   dev.codebender.cc >> /etc/hosts
 echo 127.0.0.1   compiler.dev.codebender.cc >> /etc/hosts
 
 cd /opt/codebender/$PACKAGENAME
