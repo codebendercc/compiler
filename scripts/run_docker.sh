@@ -76,6 +76,6 @@ fi
 
 sleep 5
 
-tail -f /var/log/apache2/other_vhosts_access.log & \
-tail -f /var/log/apache2/error.log & \
+# tail -f /var/log/apache2/other_vhosts_access.log & \
+# tail -f /var/log/apache2/error.log & \
 apache2ctl -DFOREGROUND
