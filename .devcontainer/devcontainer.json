@@ -18,10 +18,15 @@
 
 	// Uncomment the next line to run commands after the container is created.
 	"postCreateCommand": "scripts/vscode_docker_scripts.sh",
-	"postStartCommand": "apache2ctl -DFOREGROUND",
+	"postStartCommand": "scripts/run_docker.sh",
 
 	// Configure tool-specific properties.
 	// "customizations": {},
+	"containerEnv": {
+		"AUTH_KEY": "testing",
+		"APP_SECRET": "someGeneratedSecret",
+		"APP_ENV": "dev"
+	},
 
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "devcontainer"
